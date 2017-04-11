@@ -8,8 +8,8 @@ Everything within "the initial commit" (or initial 2 commits) was within the fou
 
 ## The bonus items in this project include:
 
-A search bar! (in place of the "RevlChallenge" title or navigation bar)
-Image caching!
+- A search bar! (in place of the "RevlChallenge" title or navigation bar)
+- Image caching!
 
 ## What I didn't get to do:
 
