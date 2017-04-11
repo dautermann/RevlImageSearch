@@ -19,7 +19,6 @@ class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewD
         super.viewDidLoad()
 
         NotificationCenter.default.addObserver(forName:searchResults.UpdatedSearchResults, object:nil, queue:nil, using:refreshOurCollection)
-
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -69,7 +68,16 @@ class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewD
         }
     }
     
+    func cellWidth() -> CGFloat
+    {
+        // four cells per line of the screen
+        let numberOfCell: CGFloat = 4
+        let cellWidth = UIScreen.main.bounds.size.width / numberOfCell
+        return cellWidth
+    }
+    
     // MARK: Search bar stuff
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         searchResults.getResultsFor(searchString: searchBar.text!, fromStartIndex: 0)
@@ -94,13 +102,7 @@ class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewD
         return cell
     }
     
-    func cellWidth() -> CGFloat
-    {
-        // four cells per line of the screen
-        let numberOfCell: CGFloat = 4
-        let cellWidth = UIScreen.main.bounds.size.width / numberOfCell
-        return cellWidth
-    }
+    // MARK: UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cellWidth = self.cellWidth()
@@ -108,10 +110,10 @@ class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("did select item at path \(indexPath.row)")
         self.performSegue(withIdentifier: "ShowDetail", sender: self)
     }
     
+    // these three functions allow the "Copy" menu to appear for a long press in the collection view...
     func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
         return true
     }

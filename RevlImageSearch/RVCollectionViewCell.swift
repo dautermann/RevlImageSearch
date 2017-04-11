@@ -18,6 +18,10 @@ class RVCollectionViewCell: UICollectionViewCell {
         imageObject = nil
     }
     
+    // I could have put this in as a property setter, but 
+    // just in case the cell hasn't been instantiated / loaded 
+    // into memory yet, we'll do it explicitly here (which happens
+    // after the cell has been dequeued and is ready to go)
     func setImageObject(_ imageObjectToSet : ImageObject)
     {
         imageObject = imageObjectToSet

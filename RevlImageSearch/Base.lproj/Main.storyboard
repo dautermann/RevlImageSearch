@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2kA-FO-6G3">
-                                <rect key="frame" x="0.0" y="70" width="375" height="597"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="zCS-EH-YNG">
                                     <size key="itemSize" width="150" height="150"/>
@@ -72,7 +72,7 @@
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2kA-FO-6G3" secondAttribute="bottom" id="4GV-6g-Es3"/>
                             <constraint firstItem="afC-SW-4XC" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Jcr-9T-XOc"/>
-                            <constraint firstItem="2kA-FO-6G3" firstAttribute="top" secondItem="afC-SW-4XC" secondAttribute="bottom" constant="6" id="JgA-4b-SHC"/>
+                            <constraint firstItem="2kA-FO-6G3" firstAttribute="top" secondItem="afC-SW-4XC" secondAttribute="bottom" id="JgA-4b-SHC"/>
                             <constraint firstItem="2kA-FO-6G3" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Ldv-6j-EB0"/>
                             <constraint firstAttribute="trailing" secondItem="afC-SW-4XC" secondAttribute="trailing" id="XBN-1O-Cd2"/>
                             <constraint firstAttribute="trailing" secondItem="2kA-FO-6G3" secondAttribute="trailing" id="ktO-cE-IP9"/>
