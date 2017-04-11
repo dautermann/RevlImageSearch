@@ -1,6 +1,6 @@
 Create a simple app in Swift that displays images from Microsoft Image Search API in a grid. Your end result should look something like this: 
 
-![](https://ibin.co/w800/3HxuRngzqR0N.png)
+![](http://i.imgur.com/0kuMzUm.jpg)
 
 #### Requirements:
 
