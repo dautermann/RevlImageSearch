@@ -9,38 +9,30 @@
 import UIKit
 import MobileCoreServices // for the UTType
 
-class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
+class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate
+{
 
     @IBOutlet weak var collectionView : UICollectionView!
     @IBOutlet weak var searchBar : UISearchBar!
     let searchResults = RVSearchResults()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        NotificationCenter.default.addObserver(forName:searchResults.UpdatedSearchResults, object:nil, queue:nil, using:refreshOurCollection)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool)
+    {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning()
+    {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-    func refreshOurCollection(notification:Notification) -> Void {
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
-        }
-    }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
         
-        if segue.identifier == "ShowDetail" {
-            
+        if segue.identifier == "ShowDetail"
+        {            
             let imageDetailVC = segue.destination as! RVImageDetailViewController
             
             if let indexPaths = self.collectionView.indexPathsForSelectedItems
@@ -53,7 +45,8 @@ class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewD
         }
     }
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView)
+    {
         let offsetY = scrollView.contentOffset.y + UIScreen.main.bounds.size.height
         
         let cellWidth = self.cellWidth()
@@ -64,7 +57,10 @@ class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewD
 
         if Int(floor(currentIndex)) > searchResults.resultLinks.count
         {
-            searchResults.getResultsFor(searchString: searchBar.text!, fromStartIndex: searchResults.resultLinks.count)
+            searchResults.getResultsFrom(startIndex: searchResults.resultLinks.count, closure:
+            {
+                self.collectionView.reloadData()
+            })
         }
     }
     
@@ -78,33 +74,41 @@ class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewD
     
     // MARK: Search bar stuff
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
+    {
         searchBar.resignFirstResponder()
-        searchResults.getResultsFor(searchString: searchBar.text!, fromStartIndex: 0)
+        searchResults.searchString = searchBar.text!
+        searchResults.getResultsFrom(startIndex: 0, closure:
+        {
+            self.collectionView.reloadData()
+        })
     }
     
     // MARK: UICollectionViewDataSource
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int
+    {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    {
         return searchResults.resultLinks.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RVCollectionViewCell", for: indexPath) as! RVCollectionViewCell
         
-        cell.setImageObject(searchResults.resultLinks[indexPath.row])
+        cell.imageObject = searchResults.resultLinks[indexPath.row]
 
         return cell
     }
     
     // MARK: UICollectionViewDelegate
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
+    {
         let cellWidth = self.cellWidth()
         return CGSize(width: cellWidth, height: cellWidth)
     }
@@ -114,7 +118,8 @@ class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewD
     }
     
     // these three functions allow the "Copy" menu to appear for a long press in the collection view...
-    func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
+    func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool
+    {
         return true
     }
 
@@ -130,7 +135,8 @@ class RVViewController: UIViewController, UISearchBarDelegate, UICollectionViewD
         return false
     }
     
-    func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
+    func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?)
+    {
         
         let selectorString = NSStringFromSelector(action)
         

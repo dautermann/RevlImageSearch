@@ -22,29 +22,37 @@ struct ImageObject {
 }
 
 // using class instead of "struct" here because resultLinks mutates for each updated search results
-class RVSearchResults {
-    
+class RVSearchResults
+{    
     var resultLinks = [ImageObject]()
-    var searchInProgress : Bool = false
+    private var searchInProgress : Bool = false
+    var searchString : String = ""
+    {
+        didSet {
+            // reset startIndex to zero since this is a new searchString
+            self.resultLinks.removeAll()
+        }
+    }
     
     let UpdatedSearchResults = Notification.Name("updatedSearchResults")
-    
-    func getResultsFor(searchString:String, fromStartIndex startIndex : Int)
+        
+    func getResultsFrom(startIndex : Int, closure: @escaping () -> Void)
     {
         if searchString.isEmpty
         {
             return
         }
-        
+
+        // no need to repeat a search if one is already in progress....
         if searchInProgress == true
         {
             return
         }
-        // no need to repeat a search if one is already in progress....
-        // print("fetching next set of results for \(searchString) starting with \(startIndex)")
-
+        
         if let escapedString = searchString.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
         {
+            searchInProgress = true
+
             var request = URLRequest(url: URL(string: "https://api.cognitive.microsoft.com/bing/v5.0/images/search?q=\(escapedString)&count=50&offset=\(startIndex)&mkt=en-us&safeSearch=Moderate")!)
             request.addValue("a6738e4c135542229c8e5c5d8a697c69", forHTTPHeaderField: "Ocp-Apim-Subscription-Key")
             let session = URLSession.shared
@@ -55,8 +63,22 @@ class RVSearchResults {
 //                        print(html)
 //                    }
                     do {
-                        if let searchResultsDictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        if let searchResultsDictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                        {
                             
+                            // we likely will only get a statusCode if there is some error
+                            //
+                            // like too many job seekers & candidates using this BING API key at one time :-)
+                            if let statusCode = searchResultsDictionary["statusCode"] as? Int
+                            {
+                                print("status code is \(statusCode)")
+                                guard statusCode == 200 else
+                                {
+                                    print("status code isn't okay")
+                                    self.searchInProgress = false
+                                    return
+                                }
+                            }
                             if let items = searchResultsDictionary["value"] as? [[String:AnyObject]]
                             {
                                 // it's a fresh search, remove all previous results...
@@ -77,12 +99,17 @@ class RVSearchResults {
                                     
                                     self.resultLinks.append(newImageObject)
                                 }
-                                
-                                NotificationCenter.default.post(name: self.UpdatedSearchResults, object: self)
-                                self.searchInProgress = false
+                                DispatchQueue.main.async
+                                {
+                                    print("number of results is \(self.resultLinks.count)")
+                                    closure()
+                                }
                             }
                         }
-                    } catch {
+                        self.searchInProgress = false
+                    }
+                    catch
+                    {
                         print(error.localizedDescription)
                         self.searchInProgress = false
                     }

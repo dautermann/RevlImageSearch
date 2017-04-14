@@ -9,24 +9,21 @@
 import UIKit
 import SDWebImage
 
-class RVCollectionViewCell: UICollectionViewCell {
-    
+class RVCollectionViewCell: UICollectionViewCell
+{
     var imageObject : ImageObject?
+    {
+        didSet
+        {
+            imageView.sd_setImage(with: imageObject?.thumbnailURL)
+        }
+    }
+
     @IBOutlet weak var imageView : UIImageView!
     
-    override func prepareForReuse() {
+    override func prepareForReuse()
+    {
         imageObject = nil
     }
-    
-    // I could have put this in as a property setter, but 
-    // just in case the cell hasn't been instantiated / loaded 
-    // into memory yet, we'll do it explicitly here (which happens
-    // after the cell has been dequeued and is ready to go)
-    func setImageObject(_ imageObjectToSet : ImageObject)
-    {
-        imageObject = imageObjectToSet
-        
-        imageView.sd_setImage(with: imageObject?.thumbnailURL)
-    }
-    
+
 }
